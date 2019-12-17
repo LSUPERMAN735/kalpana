@@ -74,13 +74,16 @@ def forward(eth_frame, dst, in_port):
     else:
         flood_frame(eth_frame, in_port)
 
+# This function is a callback. It is called by the Scapy sniffer
+# for every captured frame.
 def new_frame(eth_frame):
-    # The source address of the Ethernet frame. 'Ether' is a class provided
-    # by Scapy to represent the Ethernet header.
+    # 'Ether' is a class provided by Scapy to represent the Ethernet header.
+    # Get the source address in the Ethernet header
     src = eth_frame[Ether].src
-    # Its destination address.
+    # Similarly, get the destination address.
     dst = eth_frame[Ether].dst
-    # The network interface that received the Ethernet frame.
+    # 'sniffed_on' is a variable set by Scapy. It contains the network
+    # interface on which the Ethernet frame was captured.
     in_port = eth_frame.sniffed_on
 
     learn(src, in_port)
@@ -102,7 +105,7 @@ log("Active ports : " + str(active_ports))
 # For each sniffed packet, the sniffer calls the new_frame() function.
 # The sniffer does not store any packet in memory,
 # therefore it can run endlessly.
-# Only inbound packets will be captured (packets sent are ignored).
+# Only inbound packets will be captured (outbound packets are ignored).
 t = AsyncSniffer(iface=active_ports, prn=new_frame, store=0, filter="inbound")
 
 # Start the capture
