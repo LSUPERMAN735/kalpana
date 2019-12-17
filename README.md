@@ -16,4 +16,4 @@ La CLI accepte les commandes suivantes :
 - `forwarding` : transmission des trames reçues (activé par défaut)
 - `exit` : arrêt du switch
 
-Utilise `scapy` pour la capture en l'envoi de trames L2.
+Utilise `scapy` pour la capture et l'envoi de trames L2.
