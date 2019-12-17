@@ -46,15 +46,17 @@ def cli():
         elif cmd != "":
             print("Commande inconnue : " + cmd)
 
-def send_frame(pkt, to_port):
-    log("Sending frame to " + pkt[Ether].dst + " on port " + to_port)
-    sendp(pkt, iface=to_port, verbose=0)
+def send_frame(eth_frame, to_port):
+    log("Sending frame to " + eth_frame[Ether].dst + " on port " + to_port)
+    # Ask scapy to send the frame direcly on the selected network interface,
+    # with no additionnal encapsulation. Tell it to do it silently.
+    sendp(eth_frame, iface=to_port, verbose=0)
 
-def flood_frame(pkt, not_to_port):
+def flood_frame(eth_frame, not_to_port):
     log("Sending frame to on ALL active ports but " + not_to_port)
     for port in active_ports:
         if port != not_to_port:
-            send_frame(pkt, port)
+            send_frame(eth_frame, port)
     log("Done")
 
 def learn(mac, port):
@@ -73,11 +75,12 @@ def forward(eth_frame, dst, in_port):
         flood_frame(eth_frame, in_port)
 
 def new_frame(eth_frame):
-    # The source address of the Ethernet frame.
+    # The source address of the Ethernet frame. 'Ether' is a class provided
+    # by Scapy to represent the Ethernet header.
     src = eth_frame[Ether].src
     # Its destination address.
     dst = eth_frame[Ether].dst
-    # The incoming port.
+    # The network interface that received the Ethernet frame.
     in_port = eth_frame.sniffed_on
 
     learn(src, in_port)
