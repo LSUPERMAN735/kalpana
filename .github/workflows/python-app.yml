@@ -37,4 +37,5 @@ jobs:
     - name: Test with python
       run: |
         pip install scapy
+        chmod +x kalpana.py
         ./kalpana.py eth0 docker0
