@@ -36,4 +36,5 @@ jobs:
 #         pytest
     - name: Test with python
       run: |
+        pip install scapy
         python3 kalpana.py eth0 docker0
